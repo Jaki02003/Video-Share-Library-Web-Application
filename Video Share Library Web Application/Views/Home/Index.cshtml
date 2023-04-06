@@ -1,8 +1,67 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<VideoInfo>
+
+<h1>Videos</h1>
+
+<div class="row">
+    @foreach (var video in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@video.VideoName</h5>
+                    <div class="embed-responsive embed-responsive-16by9 mb-2">
+                        <a href="/Home/Watch/@video.id"> <video class="embed-responsive-item" src="@video.VideoPath" controls></video></a>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form method="post" data-video-id="@video.id" class="like-form">
+                                    <input type="hidden" name="videoId" value="@video.id" />
+                                    <input type="hidden" name="action" value="" />
+                                    <button type="button" class="btn btn-outline-success like-btn" data-action="like"><i class="far fa-thumbs-up"></i></button>
+                                    <button type="button" class="btn btn-outline-danger dislike-btn" data-action="dislike"><i class="far fa-thumbs-down"></i></button>
+                                    <div id="like-counts-@video.id" class="ml-2">@video.Likes <i class="far fa-thumbs-up"></i> | @video.Dislikes <i class="far fa-thumbs-down"></i></div>
+                                </form>
+                            }
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div>@video.Likes <i class="far fa-thumbs-up"></i> | @video.Dislikes <i class="far fa-thumbs-down"></i></div>
+                            }
+                        </div>
+                        <small class="text-muted">@video.Views <i class="far fa-eye"></i></small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary" href="/Home/Details/@video.id">Details</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.like-btn, .dislike-btn').on('click', function () {
+                var videoId = $(this).closest('.like-form').data('video-id');
+                var action = $(this).data('action');
+                $(this).siblings('input[name=action]').val(action);
+
+                var formData = $(this).closest('.like-form').serialize();
+
+                $.ajax({
+                    url: "/Home/Like",
+                    type: "POST",
+                    data: formData,
+                    success: function (result) {
+                        var elem = $('#like-counts-' + result.videoId);
+                        elem.html(result.likes + ' <i class="far fa-thumbs-up"></i> | ' + result.dislikes + ' <i class="far fa-thumbs-down"></i>');
+                    }
+                });
+            });
+        });
+    </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>

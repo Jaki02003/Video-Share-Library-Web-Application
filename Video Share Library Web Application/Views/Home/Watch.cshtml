@@ -1,0 +1,15 @@
+﻿@model VideoInfo
+
+<div>
+    <video src="@Model.VideoPath" controls></video>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <p><strong>Uploader:</strong> @ViewData["UploaderName"]</p>
+        <p><strong>Views:</strong> @Model.Views</p>
+        <p><strong>Likes:</strong> @Model.Likes</p>
+        <p><strong>Dislikes:</strong> @Model.Dislikes</p>
+    </div>
+</div>
+

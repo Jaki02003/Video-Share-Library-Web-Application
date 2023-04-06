@@ -1,0 +1,10 @@
+﻿@model VideoInfo
+<h1>Upload Video</h1>
+
+<form method="post" asp-action="UploadVideo" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="videoFile">Select a video file to upload:</label>
+        <input type="file" name="file" id="videoFile" class="form-control-file">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
